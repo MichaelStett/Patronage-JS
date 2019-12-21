@@ -1,215 +1,213 @@
+function isOperator(arg) {
+    switch (arg) {
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '=':
+            return true;
+        default:
+            return false;
+    }
+};
+
+function isDot(arg) {
+    switch (arg) {
+        case '.':
+            return true;
+        default:
+            return false;
+    }
+};
+
+function Calculate(left, right, op) {
+    switch (op) {
+        case '+':
+            return left + right;
+        case '-':
+            return left - right;
+        case '*':
+            return left * right;
+        case '/':
+            return right !== 0 ? left / right : Infinity;
+    }
+};
+
+function LeftSide(arr, index) {
+    var value = "";
+    for (; !isOperator(arr[index]); index++)
+        value += arr[index];
+
+    return { left: parseFloat(value), index };
+};
+
+function RightSide(arr, index) {
+    var value = "";
+    for (; index <= arr.length - 1; index++)
+        value += arr[index];
+
+    return { right: parseFloat(value), index };
+};
+
+var Calculator = {
+    arr: ["0"],
+    hasOperator: false
+};
+
+var { arr, hasOperator } = Calculator;
+
 window.onload = () => {
-    class Buttons {
-        constructor() {
-            Buttons.style();
-            Buttons.listen();
+    var buttons = document.getElementsByTagName('button');
+    var screen = document.getElementById('screen');
+
+    // styles
+    var groupClassList = ["", "col-sm"];
+    var defaultClassList = ["", "mx-1", "mt-1", "btn", "btn-sm", "btn-block", "btn-outline", "active"];
+    var operatorClassList = ["", "btn-info"];
+    var numberClassList = ["", "btn-secondary"];
+    var cancelClassList = ["", "btn-danger"];
+    var inputClassList = ["", "ml-1", "mr-1", "col-sm", "text-right", "text-white", "bg-dark"];
+
+    var calculatorClassList = ["", "container", "container-fluid"];
+    var titleClassList = ["", "display-4"];
+
+    // init screen
+    screen.value = arr.join("");
+
+    // add styling
+    var calculator = document.getElementById('calculator');
+    var title = document.getElementById('title');
+    var buttonGroup = document.getElementsByClassName("btn-group");
+
+    calculator.className += calculatorClassList.join(" ");
+    title.className += titleClassList.join(" ");
+    screen.className += inputClassList.join(" ");
+
+    [...buttonGroup].forEach((group) => {
+        group.className += groupClassList.join(" ");
+    });
+
+    [...buttons].forEach((button) => {
+        button.className += defaultClassList.join(" ");
+        button.value = button.textContent;
+
+        if (button.classList.contains("number")) {
+            button.className += numberClassList.join(" ");
         }
 
-        static handleOperator(op) {
-            if (Calculator.hasOperator === false) {
-                Calculator.operator = op;
-                Calculator.hasOperator = true;
-            } else {
-                var result = Calculator.calculate();
-                Calculator.hasOperator = false;
-                Calculator.operator = null;
-                Calculator.left = result;
-                Calculator.right = 0;
-                TextField.newState(result);
-            }
+        if (button.classList.contains("dot")) {
+            button.className += numberClassList.join(" ");
         }
 
-        static handleNumber(num) {
-            if(TextField.state.includes(".")){
-                TextField.state += num.toString();
+        if (button.classList.contains("operator")) {
+            button.className += operatorClassList.join(" ");
+        }
+
+        if (button.classList.contains("cancel")) {
+            button.className += cancelClassList.join(" ");
+        }
+    });
+
+    // listener
+    [...buttons].forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const { target } = event;
+            console.log("LISTENER");
+            if (target.classList.contains('operator')) {
+                console.log('OPERATOR: ' + target.value);
+
+                if (!hasOperator) {
+                    arr.push(target.value);
+                    screen.value = arr.join("");
+                    hasOperator = true;
+                    return;
+                }
+
+                arr.forEach(elem => {
+                    if (isOperator(elem)) {
+                        var { left, index } = LeftSide(arr, 0);
+                        console.log(`Left: ` + left);
+                        console.log(`Index: ` + index);
+
+                        var operator = arr[index++];
+                        console.log(`Operator: ` + operator);
+
+                        var { right, index } = RightSide(arr, index);
+                        console.log(`Right: ` + right);
+                        console.log(`Index: ` + index);
+
+                        var result = Calculate(left, right, operator);
+
+                        console.log(`${left}${operator}${right} = ${result}`);
+
+                        arr = [];
+                        arr.push(result);
+                        screen.value = arr.join(" ");
+                        hasOperator = false;
+                    }
+                });
             }
-            else {
-                if (Calculator.hasOperator === false) {
-                    Calculator.left = parseFloat(Calculator.left.toString() + num.toString());
-                    TextField.newState(Calculator.left);
+
+            if (target.classList.contains('number')) {
+                console.log('NUMBER: ' + target.value);
+                if (arr.length == 1 && arr[0] == 0) {
+                    arr.pop();
+                }
+                arr.push(target.value);
+                screen.value = arr.join("");
+            }
+
+            if (target.classList.contains('dot')) {
+                // if number or dot
+                for (var i = arr.length; i >= 0; i--)
+                    if (isDot(arr[i])) {
+                        console.log('DOT NOT ADDED');
+                        return;
+                    } else if (isOperator(arr[i])) {
+                        if (isNaN(arr[i + 1])) {
+                            console.log('ZERO ADDED');
+                            arr.push(0);
+                        }
+
+                        break;
+                    }
+                //arr.forEach(e => console.log(`num: ${e} isnan: ${isNaN(e)}`));
+                arr.push('.');
+                console.log('DOT ADDED');
+                screen.value = arr.join("");
+                return;
+            }
+
+            if (target.classList.contains('cancel-one')) {
+                var last = arr[arr.length - 1];
+                if (!isOperator(last)) {
+                    arr.pop();
+                    console.log("CLEAR NUM/DOT");
                 } else {
-                    // if(Calculator.operator === "/" && num === 0 ){
-                    //     console.error("MONKAS");
-                    // }
-                    Calculator.right = parseFloat(Calculator.right.toString() + num.toString());
-                    TextField.newState(Calculator.right);
-                }
-            }
-        }
-
-
-
-        static handleDot() {
-            if(!TextField.state.includes(".")){
-                TextField.state += ".";
-            }
-        }
-
-        static listen() {
-            var buttons = document.getElementsByTagName('button');
-            [...buttons].forEach((button) => {
-                button.addEventListener('click', (event) => {
-                    const { target } = event;
-
-                    if (target.classList.contains('operator')) {
-                        Buttons.handleOperator(target.value)
-                    }
-
-                    if (target.classList.contains('number')) {
-                        Buttons.handleNumber(target.value);
-                    }
-
-                    if (target.classList.contains('dot')) {
-                        Buttons.handleDot();
-                    }
-
-                    if (target.classList.contains('cancel-one')) {
-                        TextField.clear();
-                    }
-
-                    if (target.classList.contains('cancel-all')) {
-                        Calculator.reset(); // DONE
-                    }
-
-                    TextField.update();
-                })
-            });
-        }
-
-        static style() {
-            var buttons = document.getElementsByTagName('button');
-            var groupClassList = ["", "col-sm"];
-            var defaultClassList = ["", "mx-1", "mt-1", "btn", "btn-sm", "btn-block", "btn-outline", "active"];
-            var operatorClassList = ["", "btn-info"];
-            var numberClassList = ["", "btn-secondary"];
-            var cancelClassList = ["", "btn-danger"];
-
-            var buttonGroup = document.getElementsByClassName("btn-group");
-
-            [...buttonGroup].forEach((group) => {
-                group.className += groupClassList.join(" ");
-            });
-
-            [...buttons].forEach((button) => {
-                button.className += defaultClassList.join(" ");
-                button.value = button.textContent;
-
-                var buttonClassList = button.classList;
-
-                if (buttonClassList.contains("number") || buttonClassList.contains("dot")) {
-                    button.className += numberClassList.join(" ");
+                    arr.pop();
+                    hasOperator = false;
+                    console.log("CLEAR LAST OPERATOR");
                 }
 
-                if (buttonClassList.contains("operator")) {
-                    button.className += operatorClassList.join(" ");
+                if (typeof arr !== 'undefined' && arr.length == 0) {
+                    arr.push(0);
                 }
 
-                if (buttonClassList.contains("cancel")) {
-                    button.className += cancelClassList.join(" ");
-                }
-            });
-        }
-    }
-
-    class TextField {
-        static screen = document.getElementById('screen');
-        static state = "0";
-        static previousState = null;
-
-        constructor() {
-            TextField.style();
-            TextField.reset();
-        }
-
-
-        static newState(value) {
-            try {
-                if (value > Math.pow(10, 12))
-                    throw { "message": "Out Of Range" };
-
-                TextField.previousState = TextField.state;
-                TextField.state = value.toString();
-            } catch (e) {
-                console.error(e.message);
-                Calculator.reset();
+                screen.value = arr.join("");
             }
-        }
 
-        static update() {
-            TextField.screen.value = TextField.state;
-            console.log("Now: " + TextField.state);
-            console.log("Prev: " + TextField.previousState);
-            console.log("Left: " + Calculator.left);
-            console.log("Right: " + Calculator.right);
-        }
+            if (target.classList.contains('cancel-all')) {
+                console.clear();
+                console.log("CLEAR ALL");
+                arr = [];
+                arr.push(0);
 
-        static style() {
-            var classList = ["", "col-sm", "text-right", "text-white", "bg-dark"];
-            TextField.screen.className += classList.join(" ");
-        }
-
-        static clear() {
-            TextField.state = TextField.previousState;
-            TextField.previousState = null;
-        }
-
-        static reset() {
-            TextField.state = "0";
-            TextField.previousState = null;
-            TextField.update();
-        }
-    }
-
-
-    class Calculator {
-        static left = 0;
-        static right = 0;
-        static operator = null;
-        static hasOperator = false;
-        static lastInput = null;
-
-        constructor() {
-            Calculator.style();
-            Calculator.reset();
-        }
-
-        static style() {
-            var calculatorClassList = ["", "container", "container-fluid"];
-            var titleClassList = ["", "display-4"];
-            var calculator = document.getElementById('calculator');
-
-            calculator.className += calculatorClassList.join(" ");
-
-            var title = document.getElementById('title');
-            title.className += titleClassList.join(" ");
-        }
-
-        static reset() {
-            Calculator.left = 0;
-            Calculator.right = 0;
-            Calculator.operator = null;
-            Calculator.hasOperator = false;
-            Calculator.lastInput = null;
-            TextField.reset();
-        }
-
-        static calculate = () => {
-            switch (Calculator.operator) {
-                case '+':
-                    return Calculator.left + Calculator.right;
-                case '-':
-                    return Calculator.left - Calculator.right;
-                case '*':
-                    return Calculator.left * Calculator.right;
-                case '/':
-                    return Calculator.left / Calculator.right;
-                case '=':
-                    return Calculator.right;
+                screen.value = arr.join("");
             }
-        }
-    }
 
-    new Calculator();
-    new Buttons();
-    new TextField();
+            arr.forEach(e => console.log("elem:" + e));
+
+            console.log("******");
+        })
+    });
 }
