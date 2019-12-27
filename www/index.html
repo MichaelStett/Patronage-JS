@@ -1,3 +1,4 @@
+
 <head>
     <script src="script.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
@@ -6,44 +7,44 @@
         integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
 </head>
 
-<div class="jumbotron">
-    <div id="calculator">
+<<div class="jumbotron">
+    <div class="container container-fluid" id="calculator">
         <div class="btn-toolbar" role="toolbar">
             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                <div id="title">Calculator</div>
-                <div class="btn-group" role="group">
-                    <input id="screen" disabled>
+                <div class="display-4" id="title">Calculator</div>
+                <div class="btn-group col-sm" role="group">
+                    <input class="ml-1 mr-1 col-sm text-right text-white bg-dark" id="screen" disabled="">
                 </div>
-                <div class="btn-group" role="group">
-                    <button type="button" class="cancel cancel-all">C</button>
-                    <button type="button" class="cancel cancel-one">CE</button>
+                <div class="btn-group col-sm" role="group">
+                    <button type="button" class="cancel cancel-all mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-danger" value="C">C</button>
+                    <button type="button" class="cancel cancel-one mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-danger" value="CE">CE</button>
                 </div>
-                <div class="btn-group" role="group">
-                    <button type="button" class="number">1</button>
-                    <button type="button" class="number">2</button>
-                    <button type="button" class="number">3</button>
-                    <button type="button" class="operator">+</button>
-                </div>
-
-                <div class="btn-group" role="group">
-                    <button type="button" class="number">4</button>
-                    <button type="button" class="number">5</button>
-                    <button type="button" class="number">6</button>
-                    <button type="button" class="operator">-</button>
+                <div class="btn-group col-sm" role="group">
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="1">1</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="2">2</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="3">3</button>
+                    <button type="button" class="operator mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-info" value="+">+</button>
                 </div>
 
-                <div class="btn-group" role="group">
-                    <button type="button" class="number">7</button>
-                    <button type="button" class="number">8</button>
-                    <button type="button" class="number">9</button>
-                    <button type="button" class="operator">*</button>
+                <div class="btn-group col-sm" role="group">
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="4">4</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="5">5</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="6">6</button>
+                    <button type="button" class="operator mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-info" value="-">-</button>
                 </div>
 
-                <div class="btn-group" role="group">
-                    <button type="button" class="number">0</button>
-                    <button type="button" class="dot">.</button>
-                    <button type="button" class="operator">=</button>
-                    <button type="button" class="operator">/</button>
+                <div class="btn-group col-sm" role="group">
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="7">7</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="8">8</button>
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="9">9</button>
+                    <button type="button" class="operator mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-info" value="*">*</button>
+                </div>
+
+                <div class="btn-group col-sm" role="group">
+                    <button type="button" class="number mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value="0">0</button>
+                    <button type="button" class="dot mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-secondary" value=".">.</button>
+                    <button type="button" class="operator mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-info" value="=">=</button>
+                    <button type="button" class="operator mx-1 mt-1 btn btn-sm btn-block btn-outline active btn-info" value="/">/</button>
                 </div>
             </div>
         </div>
