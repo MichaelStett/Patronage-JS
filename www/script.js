@@ -103,7 +103,9 @@ function numberEvent(screen, value) {
 function cancelOneEvent(screen) {
     let last = arr[arr.length - 1];
     if (!isOperator(last)) {
-        arr.pop();
+        for (var index = arr.length - 1; !isOperator(arr[index]) && index >= 0; index--) {
+            arr.pop();
+        }
     } else {
         arr.pop();
         hasOperator = false;
