@@ -1,26 +1,12 @@
 function isOperator(arg) {
-    switch (arg) {
-        case '+':
-        case '-':
-        case '*':
-        case '/':
-        case '=':
-            return true;
-        default:
-            return false;
-    }
+    return ['+', '-', '*', '/'].indexOf(arg) > -1;
 };
 
 function isDot(arg) {
-    switch (arg) {
-        case '.':
-            return true;
-        default:
-            return false;
-    }
+    return '.' == arg;
 };
 
-function Calculate(left, right, op) {
+function calculate(left, right, op) {
     switch (op) {
         case '+':
             return left + right;
@@ -33,7 +19,7 @@ function Calculate(left, right, op) {
     }
 };
 
-function LeftSide(arr, index) {
+function leftSide(arr, index) {
     var value = "";
     for (; !isOperator(arr[index]); index++)
         value += arr[index];
@@ -41,7 +27,7 @@ function LeftSide(arr, index) {
     return { left: parseFloat(value), index };
 };
 
-function RightSide(arr, index) {
+function rightSide(arr, index) {
     var value = "";
     for (; index <= arr.length - 1; index++)
         value += arr[index];
@@ -60,54 +46,10 @@ window.onload = () => {
     var buttons = document.getElementsByTagName('button');
     var screen = document.getElementById('screen');
 
-    // styles
-    var groupClassList = ["", "col-sm"];
-    var defaultClassList = ["", "mx-1", "mt-1", "btn", "btn-sm", "btn-block", "btn-outline", "active"];
-    var operatorClassList = ["", "btn-info"];
-    var numberClassList = ["", "btn-secondary"];
-    var cancelClassList = ["", "btn-danger"];
-    var inputClassList = ["", "ml-1", "mr-1", "col-sm", "text-right", "text-white", "bg-dark"];
-
-    var calculatorClassList = ["", "container", "container-fluid"];
-    var titleClassList = ["", "display-4"];
-
     // init screen
     screen.value = arr.join("");
 
     // add styling
-    var calculator = document.getElementById('calculator');
-    var title = document.getElementById('title');
-    var buttonGroup = document.getElementsByClassName("btn-group");
-
-    calculator.className += calculatorClassList.join(" ");
-    title.className += titleClassList.join(" ");
-    screen.className += inputClassList.join(" ");
-
-    [...buttonGroup].forEach((group) => {
-        group.className += groupClassList.join(" ");
-    });
-
-    [...buttons].forEach((button) => {
-        button.className += defaultClassList.join(" ");
-        button.value = button.textContent;
-
-        if (button.classList.contains("number")) {
-            button.className += numberClassList.join(" ");
-        }
-
-        if (button.classList.contains("dot")) {
-            button.className += numberClassList.join(" ");
-        }
-
-        if (button.classList.contains("operator")) {
-            button.className += operatorClassList.join(" ");
-        }
-
-        if (button.classList.contains("cancel")) {
-            button.className += cancelClassList.join(" ");
-        }
-    });
-
     // listener
     [...buttons].forEach((button) => {
         button.addEventListener('click', (event) => {
@@ -116,36 +58,34 @@ window.onload = () => {
             if (target.classList.contains('operator')) {
                 console.log('OPERATOR: ' + target.value);
 
+                if (target.value === '=' && !hasOperator){
+                    screen.value = arr.join("");
+                    hasOperator = false;
+                    return;
+                }
+
                 if (!hasOperator) {
                     arr.push(target.value);
                     screen.value = arr.join("");
                     hasOperator = true;
                     return;
+                } else {
+
+                    var { left, index } = leftSide(arr, 0);
+                    var operator = arr[index++];
+                    var { right, index } = rightSide(arr, index);
+
+                    if (isNaN(left) || isNaN(right)) return;
+
+                    var result = calculate(left, right, operator);
+
+                    console.log(`${left}${operator}${right} = ${result}`);
+
+                    arr = [];
+                    arr.push(result);
+                    screen.value = arr.join("");
+                    hasOperator = false;
                 }
-
-                arr.forEach(elem => {
-                    if (isOperator(elem)) {
-                        var { left, index } = LeftSide(arr, 0);
-                        console.log(`Left: ` + left);
-                        console.log(`Index: ` + index);
-
-                        var operator = arr[index++];
-                        console.log(`Operator: ` + operator);
-
-                        var { right, index } = RightSide(arr, index);
-                        console.log(`Right: ` + right);
-                        console.log(`Index: ` + index);
-
-                        var result = Calculate(left, right, operator);
-
-                        console.log(`${left}${operator}${right} = ${result}`);
-
-                        arr = [];
-                        arr.push(result);
-                        screen.value = arr.join(" ");
-                        hasOperator = false;
-                    }
-                });
             }
 
             if (target.classList.contains('number')) {
@@ -201,11 +141,9 @@ window.onload = () => {
                 console.log("CLEAR ALL");
                 arr = [];
                 arr.push(0);
-
+                hasOperator = false;
                 screen.value = arr.join("");
             }
-
-            arr.forEach(e => console.log("elem:" + e));
 
             console.log("******");
         })
